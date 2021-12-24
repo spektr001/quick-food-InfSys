@@ -7,7 +7,7 @@ import clsObj from './footer.module.scss'
 
 export const Footer = () => {
     return (
-        <header>
+        <footer>
             <Box sx={{ flexGrow: 1 } }>
                 <AppBar position="static">
                     <Toolbar>
@@ -18,6 +18,6 @@ export const Footer = () => {
                     </Toolbar>
                 </AppBar>
             </Box>
-        </header>
+        </footer>
     );
 }
