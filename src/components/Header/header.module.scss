@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Shizuru&display=swap');
+
+.header {
+    background-color: #FF8008;
+}
+
+.title {
+    font-family: 'Shizuru', cursive;
+    font-size: 50px;
+    &:hover {
+        cursor: pointer;
+        color: #77ff08
+    }
+}
+
+.logo {
+    width: 70px;
+    margin-right: 10px;
+}
