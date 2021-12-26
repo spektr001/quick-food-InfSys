@@ -51,7 +51,6 @@ export const MainScreen = () => {
                     price: data[i].price
                 }
             )
-            console.log(shopList)
         }
 
         foodBlocks.push(

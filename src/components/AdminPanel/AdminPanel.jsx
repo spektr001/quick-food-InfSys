@@ -4,8 +4,6 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -16,7 +14,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { doc, getDocs, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 
 export function AdminPanel() {
@@ -30,12 +28,43 @@ export function AdminPanel() {
     useEffect(
         () => {
             async function fetchData() {
-                const querySnapshots = doc(db, 'food', 'foodList')
-                const mySnap = await getDocs(querySnapshots)
-                setData(mySnap.data().food)
+                const querySnapshots = doc(db, 'food', 'orders')
+                const mySnap = await getDoc(querySnapshots)
+                setData(mySnap.data().orderList)
             }
             fetchData()
         }, []);
+
+    let orderList = []
+    let totalStonks = []
+
+    for (let i = 0; i < data.length; i++) {
+        totalStonks.push(data[i].price)
+        orderList.push(
+            <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                <List>
+                    <ListItem disablePadding>
+                        {data[i].type}
+                    </ListItem>
+                    <ListItem disablePadding>
+                        {data[i].title}
+                    </ListItem>
+                    <ListItem disablePadding>
+                        {"Ціна: " + data[i].price + " грн"}
+                    </ListItem>
+                </List>
+                <Divider />
+            </Box>
+        )
+    }
+
+    const sum = () => {
+        let sum = 0;
+        for (let i = 0; i < totalStonks.length; i++) {
+          sum += totalStonks[i];
+        }
+        return sum
+      }
 
     const addItem = async () => {
         await updateDoc(doc(db, 'food', 'foodList'), {
@@ -43,7 +72,7 @@ export function AdminPanel() {
                 type: type,
                 title: title,
                 price: Number(price)
-            }) 
+            })
         });
     };
 
@@ -53,7 +82,7 @@ export function AdminPanel() {
                 type: type,
                 title: title,
                 price: Number(price)
-            }) 
+            })
         });
     };
 
@@ -82,44 +111,14 @@ export function AdminPanel() {
             <Box sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={10}>
-                        <Button sx={{margin: 5}} onClick={handleClickMOpen} variant="contained">Змінити список товарів</Button>
+                        <Button sx={{ margin: 5 }} onClick={handleClickMOpen} variant="contained">Змінити список товарів</Button>
                     </Grid>
                     <Grid item xs={8}>
-                        <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                            <nav aria-label="main mailbox folders">
-                                <List>
-                                    <ListItem disablePadding>
-                                        <ListItemButton>
-
-                                            <ListItemText primary="Inbox" />
-                                        </ListItemButton>
-                                    </ListItem>
-                                    <ListItem disablePadding>
-                                        <ListItemButton>
-
-                                            <ListItemText primary="Drafts" />
-                                        </ListItemButton>
-                                    </ListItem>
-                                </List>
-                            </nav>
-                            <Divider />
-                            <nav aria-label="secondary mailbox folders">
-                                <List>
-                                    <ListItem disablePadding>
-                                        <ListItemButton>
-                                            <ListItemText primary="Trash" />
-                                        </ListItemButton>
-                                    </ListItem>
-                                    <ListItem disablePadding>
-                                        <ListItemButton component="a" href="#simple-list">
-                                            <ListItemText primary="Spam" />
-                                        </ListItemButton>
-                                    </ListItem>
-                                </List>
-                            </nav>
-                        </Box>
+                        <h2>Список замовлень</h2>
+                        {orderList}
                     </Grid>
                 </Grid>
+                <font size="7">Зароблено: {sum()} грн</font>
             </Box>
 
             <Dialog open={openM} onClose={handleMClose}>
