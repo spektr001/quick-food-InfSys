@@ -13,7 +13,7 @@ import pizza from '../../assets/icons/pizza.png'
 import sushi from '../../assets/icons/sushi.png'
 import hotDog from '../../assets/icons/hot-dog.png'
 import fri from '../../assets/icons/fri.png'
-import burger from '../../assets/icons/fri.png'
+import burger from '../../assets/icons/burger.png'
 import soda from '../../assets/icons/soda.png'
 import clsObj from './mainscreen.module.scss'
 
@@ -36,7 +36,7 @@ export const MainScreen = () => {
                 setData(mySnap.data().food)
             }
             fetchData()
-        }, []);
+        }, [data]);
 
     const foodBlocks = []
 
