@@ -24,6 +24,8 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
+export const shopList = []
+
 export const MainScreen = () => {
 
     const [data, setData] = useState([]);
@@ -36,11 +38,22 @@ export const MainScreen = () => {
                 setData(mySnap.data().food)
             }
             fetchData()
-        }, [data]);
+        }, []);
 
     const foodBlocks = []
 
     for (let i = 0; i < data.length; i++) {
+        const addToShopList = () => {
+            shopList.push(
+                {
+                    type: data[i].type,
+                    title: data[i].title,
+                    price: data[i].price
+                }
+            )
+            console.log(shopList)
+        }
+
         foodBlocks.push(
             <Grid item xs={4}>
                 <Item>
@@ -70,7 +83,7 @@ export const MainScreen = () => {
                                 alignItems: 'center',
                             }}>
                                 <span className={clsObj.foodPrice}>Ціна: {data[i].price} грн</span>
-                                <Button size="small" color="success" variant="contained"><AddOutlinedIcon /></Button>
+                                <Button onClick={addToShopList} size="small" color="success" variant="contained"><AddOutlinedIcon /></Button>
                             </Box>
                         </Container>
                     </React.Fragment >

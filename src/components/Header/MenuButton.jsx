@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
@@ -14,15 +15,21 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Divider from '@mui/material/Divider';
 import { db } from '../../firebase-config'
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { shopList } from '../MainScreen/MainScreen';
 
 export function MenuButton() {
 
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const [openM, setOpenM] = React.useState(false);
+  const [openS, setOpenS] = React.useState(false);
   const [pass, setPass] = React.useState('');
+  const [shop, setShop] = React.useState(shopList);
   const [data, setData] = React.useState({});
   let navigate = useNavigate();
 
@@ -48,6 +55,51 @@ export function MenuButton() {
     }
   };
 
+  const priceArr = []
+
+
+  let shopListReady = shop.map((p) => {
+    priceArr.push(p.price)
+    return (
+      <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+        <List>
+          <ListItem disablePadding>
+            {p.type}
+          </ListItem>
+          <ListItem disablePadding>
+            {p.title}
+          </ListItem>
+          <ListItem disablePadding>
+            {"Ціна: " + p.price + " грн"}
+          </ListItem>
+        </List>
+        <Divider />
+      </Box>
+    )
+  })
+
+  const sum = () => {
+    let sum = 0;
+    for (let i = 0; i < priceArr.length; i++) {
+      sum += priceArr[i];
+    }
+    return sum
+  }
+
+  const sendList = () => {
+    shop.forEach(async (element) => {
+      await updateDoc(doc(db, 'food', 'orders'), {
+        orderList:
+          arrayUnion({
+            type: element.type,
+            title: element.title,
+            price: element.price
+          })
+      })
+    });
+  };
+
+
   const handleChange = (e) => {
     setPass(e.target.value)
   }
@@ -59,6 +111,14 @@ export function MenuButton() {
 
   const handleMClose = () => {
     setOpenM(false);
+  };
+
+  const handleClickSOpen = () => {
+    setOpenS(true);
+  };
+
+  const handleSClose = () => {
+    setOpenS(false);
   };
 
   const handleToggle = () => {
@@ -130,7 +190,7 @@ export function MenuButton() {
                       aria-labelledby="composition-button"
                       onKeyDown={handleListKeyDown}
                     >
-                      <MenuItem onClick={handleClose}>Список покупок</MenuItem>
+                      <MenuItem onClick={handleClickSOpen}>Список покупок</MenuItem>
                       <MenuItem onClick={handleClickMOpen}>AdminPanel</MenuItem>
                     </MenuList>
                   </ClickAwayListener>
@@ -158,6 +218,19 @@ export function MenuButton() {
         <DialogActions>
           <Button onClick={handleMClose}>Назад</Button>
           <Button onClick={handleMCheck}>Підтвердити</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openS} onClose={handleSClose}>
+        <DialogTitle>Корзина</DialogTitle>
+        <DialogContent>
+          {shopListReady}
+          <font size="5">До сплати: {sum()} грн</font>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleSClose}>Назад</Button>
+          <Button onClick={sendList} color="success">Підтвердити</Button>
+          <Button onClick={() => { setShop([]) }} color="error">Відміна</Button>
         </DialogActions>
       </Dialog>
     </>
