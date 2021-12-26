@@ -7,6 +7,7 @@ import logo from '../../assets/icons/logo.png'
 import clsObj from './header.module.scss'
 import { MenuButton } from './MenuButton'
 
+
 export const Header = () => {
     return (
         <header>

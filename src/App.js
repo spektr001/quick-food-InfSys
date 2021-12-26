@@ -1,13 +1,13 @@
 import { Header } from './components/Header/Header';
-import { MainScreen } from './components/MainScreen/MainScreen';
 import { Footer } from './components/Footer/Footer';
 import './App.css';
+import Routemap from './components/RouteMap';
 
 function App() {
   return (
     <>
       <Header />
-      <MainScreen />
+      <Routemap />
       <Footer />
     </>
   );

@@ -1,14 +1,14 @@
 import React from 'react';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
+import { AdminPanel } from './AdminPanel/AdminPanel';
+import { MainScreen } from './MainScreen/MainScreen';
 
 const Routemap = () => {
     return (
-        <Router>
-            <Switch>
-                <Route path="/" component={Dashboard} />
-                
-            </Switch>
-        </Router>
+            <Routes>
+                <Route path="/" element={<MainScreen />} />
+                <Route path="/adminPanel" element={<AdminPanel />} />
+            </Routes>
     );
 }
 
