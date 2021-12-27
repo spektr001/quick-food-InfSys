@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import Snackbar from '@mui/material/Snackbar';
 import pizza from '../../assets/icons/pizza.png'
 import sushi from '../../assets/icons/sushi.png'
 import hotDog from '../../assets/icons/hot-dog.png'
@@ -29,6 +30,7 @@ export const shopList = []
 export const MainScreen = () => {
 
     const [data, setData] = useState([]);
+    const [openSnack, setOpenSnack] = useState(false);
 
     useEffect(
         () => {
@@ -39,6 +41,14 @@ export const MainScreen = () => {
             }
             fetchData()
         }, []);
+
+    const handleOpenSnack = () => {
+        setOpenSnack(true);
+    };
+
+    const handleCloseSnack = () => {
+        setOpenSnack(false);
+    };
 
     const foodBlocks = []
 
@@ -51,6 +61,7 @@ export const MainScreen = () => {
                     price: data[i].price
                 }
             )
+            handleOpenSnack()
         }
 
         foodBlocks.push(
@@ -93,13 +104,22 @@ export const MainScreen = () => {
     }
 
     return (
-        <main>
-            <Box sx={{ flexGrow: 1, margin: 5 }}>
-                <Grid container spacing={2}>
-                    {foodBlocks}
-                </Grid>
-            </Box>
-        </main>
+        <>
+            <main>
+                <Box sx={{ flexGrow: 1, margin: 5 }}>
+                    <Grid container spacing={2}>
+                        {foodBlocks}
+                    </Grid>
+                </Box>
+            </main>
+
+            <Snackbar
+                open={openSnack}
+                autoHideDuration={2000}
+                onClose={handleCloseSnack}
+                message="Додано до корзини"
+            />
+        </>
     );
 }
 

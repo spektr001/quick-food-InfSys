@@ -18,6 +18,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
+import Snackbar from '@mui/material/Snackbar';
 import { db } from '../../firebase-config'
 import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { shopList } from '../MainScreen/MainScreen';
@@ -28,8 +29,8 @@ export function MenuButton() {
   const anchorRef = React.useRef(null);
   const [openM, setOpenM] = React.useState(false);
   const [openS, setOpenS] = React.useState(false);
+  const [openSnackSold, setOpenSnackSold] = React.useState(false);
   const [pass, setPass] = React.useState('');
-  const [shop, setShop] = React.useState(shopList);
   const [data, setData] = React.useState({});
   let navigate = useNavigate();
 
@@ -58,7 +59,7 @@ export function MenuButton() {
   const priceArr = []
 
 
-  let shopListReady = shop.map((p) => {
+  let shopListReady = shopList.map((p) => {
     priceArr.push(p.price)
     return (
       <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
@@ -87,7 +88,7 @@ export function MenuButton() {
   }
 
   const sendList = () => {
-    shop.forEach(async (element) => {
+    shopList.forEach(async (element) => {
       await updateDoc(doc(db, 'food', 'orders'), {
         orderList:
           arrayUnion({
@@ -97,6 +98,8 @@ export function MenuButton() {
           })
       })
     });
+    shopList.length = 0
+    handleOpenSnackSold()
   };
 
 
@@ -119,6 +122,14 @@ export function MenuButton() {
 
   const handleSClose = () => {
     setOpenS(false);
+  };
+
+  const handleOpenSnackSold = () => {
+    setOpenSnackSold(true);
+  };
+
+  const handleCloseSnackSold = () => {
+    setOpenSnackSold(false);
   };
 
   const handleToggle = () => {
@@ -230,9 +241,16 @@ export function MenuButton() {
         <DialogActions>
           <Button onClick={handleSClose}>Назад</Button>
           <Button onClick={sendList} color="success">Підтвердити</Button>
-          <Button onClick={() => { setShop([]) }} color="error">Відміна</Button>
+          <Button onClick={() => { shopList.length = 0 }} color="error">Відміна</Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+                open={openSnackSold}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackSold}
+                message="Ваше замовлення відправлено. Дякуємо за покупку"
+            />
     </>
   );
 }
