@@ -1,7 +1,7 @@
 # quick-food-infsys
 **Information system for fast food network**
 
-*Status*: **in process**
+*Status*: **finished**
 
 # Getting Started with Create React App
 
